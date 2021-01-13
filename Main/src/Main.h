@@ -1,0 +1,8 @@
+//
+// Created by capit on 11/29/2020.
+//
+
+#ifndef EYETRACKINGNEXT_MAIN_H
+#define EYETRACKINGNEXT_MAIN_H
+
+#endif //EYETRACKINGNEXT_MAIN_H
