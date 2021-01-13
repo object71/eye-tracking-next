@@ -3,6 +3,7 @@ project(EyeTrackingNext)
 
 include(cmake/CompileDefinitions.cmake)
 
+find_package(Python3 COMPONENTS Interpreter)
 add_subdirectory(Packages)
 
 set(CMAKE_CXX_STANDARD 17)

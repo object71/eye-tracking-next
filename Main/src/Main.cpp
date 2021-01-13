@@ -2,6 +2,11 @@
 
 int main()
 {
-	std::cout << "Hello, World!" << std::endl;
+	std::cout << "Application started" << std::endl;
+	
+//	cv::Mat peaceImage = cv::imload("peace.jpg", cv::CV_LOADIMAGE_UNCHANGED);
+//	imshow("Peace", peaceImage);
+//	cv::waitKey();
+
     return 0;
 }

@@ -1,10 +1,8 @@
 project(Packages)
 
-#add_subdirectory(raylib)
-
 add_library(Packages include/Packages.h src/Packages.cpp)
 
-#target_link_libraries(Packages raylib)
+#target_link_libraries(Packages)
 
 target_include_directories(Packages
                            PUBLIC
