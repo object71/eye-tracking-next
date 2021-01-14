@@ -2,7 +2,7 @@ project(Packages)
 
 add_library(Packages include/Packages.h src/Packages.cpp)
 
-#target_link_libraries(Packages)
+target_link_libraries(Packages ${OpenCV_LIBS})
 
 target_include_directories(Packages
                            PUBLIC
