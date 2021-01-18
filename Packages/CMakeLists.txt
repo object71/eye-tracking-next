@@ -1,8 +1,9 @@
 project(Packages)
 
-add_library(Packages include/Packages.h src/Packages.cpp)
+add_subdirectory(easy_profiler)
+add_subdirectory(filesystem)
 
-string(REPLACE ";" " " opencv_library_links "${OpenCV_LIBS}")
+add_library(Packages STATIC include/Packages.h src/Packages.cpp)
 
 target_link_libraries(Packages
                       opencv_core
@@ -18,6 +19,8 @@ target_link_libraries(Packages
 target_link_libraries(Packages fmt::fmt) # Should come along with spdlog
 target_link_libraries(Packages spdlog::spdlog)
 target_link_libraries(Packages ${raylib_LIBRARIES})
+target_link_libraries(Packages easy_profiler)
+target_link_libraries(Packages ghc_filesystem)
 
 target_include_directories(Packages
                            PUBLIC
@@ -27,5 +30,3 @@ target_include_directories(Packages
                            PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}/src
                            )
-
-message(STATUS "OpenCV Link: ${opencv_library_links}")

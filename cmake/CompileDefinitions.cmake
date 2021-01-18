@@ -1,4 +1,4 @@
-if(WIN32)
+if (WIN32)
     add_compile_definitions(WINDOWS=1)
 endif ()
 
@@ -10,8 +10,12 @@ if (APPLE)
     add_compile_definitions(APPLE=1)
 endif ()
 
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+if (${CMAKE_BUILD_TYPE} MATCHES Debug)
     add_compile_definitions(_DEBUG=1)
-else()
+else ()
     add_compile_definitions(NDEBUG=1)
-endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
+endif (${CMAKE_BUILD_TYPE} MATCHES Debug)
+
+if (PROFILE_APP)
+    add_compile_definitions(PROFILE_APP=1)
+endif ()

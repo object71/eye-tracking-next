@@ -1,45 +1,20 @@
-#include <opencv2/opencv.hpp>
-#include <spdlog/spdlog.h>
-#include <raylib.h>
+#include "Main.h"
 
 int main()
 {
+#if PROFILE_APP
+//	EASY_PROFILER_ENABLE
+#endif
+	
 	spdlog::info("Application started");
 	spdlog::set_level(spdlog::level::debug);
 	
 	int screenWidth = 800;
 	int screenHeight = 600;
 	InitWindow(screenWidth, screenHeight, "Eye Tracking Next");
+	FaceTracker ft;
 	
-	//cv::CAP_DSHOW or cv::CAP_MSMF or cv::CAP_V4L
-	cv::VideoCapture capture;
-	
-	capture.open(0, cv::VideoCaptureAPIs::CAP_MSMF);
-	if (!capture.isOpened())
-	{
-		spdlog::critical("Couldn't open capture device!");
-		return 1;
-	}
-	
-	spdlog::info("Camera captured successfully");
-	
-	
-	
-	cv::Mat frame
-			(
-					(int)capture.get(cv::CAP_PROP_FRAME_HEIGHT),
-					(int)capture.get(cv::CAP_PROP_FRAME_WIDTH),
-					(int)capture.get(cv::CAP_PROP_FORMAT)
-			);
-	
-	Image imageFrame;
-	imageFrame.format = UNCOMPRESSED_R8G8B8;
-	imageFrame.height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
-	imageFrame.width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
-	imageFrame.mipmaps = 1;
-	imageFrame.data = frame.data;
-	
-	Texture2D mainTexture = LoadTextureFromImage(imageFrame);
+	Texture2D* mainTexture = nullptr;
 	
 	SetTargetFPS(60);
 	
@@ -47,33 +22,51 @@ int main()
 	{
 		
 		// Update
-		capture >> frame;
+		ft.Update(GetFrameTime());
 		
-		if (frame.empty())
+		cv::Mat currentFrame;
+		if (ft.TryGetFrame(currentFrame))
 		{
-			spdlog::critical("Frame is empty!");
-			break;
+			if(!mainTexture) {
+				Image imageFrame;
+				imageFrame.format = UNCOMPRESSED_R8G8B8;
+				imageFrame.height = ft.GetCameraHeight();
+				imageFrame.width = ft.GetCameraWidth();
+				imageFrame.mipmaps = 1;
+				imageFrame.data = currentFrame.data;
+				
+				mainTexture = new Texture2D();
+				*mainTexture = LoadTextureFromImage(imageFrame);
+			} else {
+				UpdateTexture(*mainTexture, currentFrame.data);
+			}
 		}
-		
-		UpdateTexture(mainTexture, frame.data);
 		
 		// Draw
 		BeginDrawing();
 		
 		ClearBackground(RAYWHITE);
 		
-		DrawTexture(
-				mainTexture, screenWidth - mainTexture.width - 60, screenHeight / 2 - mainTexture.height / 2, WHITE
-		);
-		DrawRectangleLines(
-				screenWidth - mainTexture.width - 60, screenHeight / 2 - mainTexture.height / 2, mainTexture.width,
-				mainTexture.height, BLACK
-		);
+		if (mainTexture)
+		{
+			DrawTexture(
+					*mainTexture, screenWidth - mainTexture->width - 60, screenHeight / 2 - mainTexture->height / 2, WHITE
+			);
+			DrawRectangleLines(
+					screenWidth - mainTexture->width - 60, screenHeight / 2 - mainTexture->height / 2, mainTexture->width,
+					mainTexture->height, BLACK
+			);
+		} else {
+			DrawText("Loading...", 190, 200, 20, LIGHTGRAY);
+		}
 		
 		EndDrawing();
 	}
-	
-	capture.release();
+
+#if PROFILE_APP
+//	std::string filename = fmt::format("profile.prof");
+//	profiler::dumpBlocksToFile(filename.c_str());
+#endif
 	
 	return 0;
 }
