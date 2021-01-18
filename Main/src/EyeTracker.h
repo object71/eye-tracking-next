@@ -2,8 +2,8 @@
 // Created by capit on 1/18/2021.
 //
 
-#ifndef EYETRACKINGNEXT_FACETRACKER_H
-#define EYETRACKINGNEXT_FACETRACKER_H
+#ifndef EYETRACKINGNEXT_EYETRACKER_H
+#define EYETRACKINGNEXT_EYETRACKER_H
 
 #include <opencv2/opencv.hpp>
 #include <spdlog/spdlog.h>
@@ -11,7 +11,7 @@
 #include <future>
 #include <easy/profiler.h>
 
-class FaceTracker
+class EyeTracker
 {
 private:
 	cv::VideoCapture VideoCaptureMain;
@@ -22,13 +22,13 @@ private:
 	void LoadVideoCapture();
 
 public:
-	FaceTracker();
+	EyeTracker();
 	
-	FaceTracker(const FaceTracker&) = delete;
+	EyeTracker(const EyeTracker&) = delete;
 	
-	FaceTracker operator=(const FaceTracker&) = delete;
+	EyeTracker operator=(const EyeTracker&) = delete;
 	
-	virtual ~FaceTracker();
+	virtual ~EyeTracker();
 	
 	void Update(const float& deltaTime);
 	
@@ -39,4 +39,4 @@ public:
 	int GetCameraHeight() const;
 };
 
-#endif //EYETRACKINGNEXT_FACETRACKER_H
+#endif //EYETRACKINGNEXT_EYETRACKER_H

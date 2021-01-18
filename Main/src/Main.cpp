@@ -1,18 +1,31 @@
 #include "Main.h"
 
+void Run();
+
 int main()
 {
 #if PROFILE_APP
 //	EASY_PROFILER_ENABLE
 #endif
-	
-	spdlog::info("Application started");
 	spdlog::set_level(spdlog::level::debug);
+	spdlog::info("Application started");
 	
+	Run();
+
+#if PROFILE_APP
+//	std::string filename = fmt::format("profile.prof");
+//	profiler::dumpBlocksToFile(filename.c_str());
+#endif
+	
+	return 0;
+}
+
+void Run()
+{
 	int screenWidth = 800;
 	int screenHeight = 600;
 	InitWindow(screenWidth, screenHeight, "Eye Tracking Next");
-	FaceTracker ft;
+	EyeTracker ft;
 	
 	Texture2D* mainTexture = nullptr;
 	
@@ -62,11 +75,4 @@ int main()
 		
 		EndDrawing();
 	}
-
-#if PROFILE_APP
-//	std::string filename = fmt::format("profile.prof");
-//	profiler::dumpBlocksToFile(filename.c_str());
-#endif
-	
-	return 0;
 }

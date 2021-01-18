@@ -2,14 +2,14 @@
 // Created by capit on 1/18/2021.
 //
 
-#include "FaceTracker.h"
+#include "EyeTracker.h"
 
-FaceTracker::FaceTracker()
+EyeTracker::EyeTracker()
 {
-	LoadingThread = std::thread(&FaceTracker::LoadVideoCapture, this);
+	LoadingThread = std::thread(&EyeTracker::LoadVideoCapture, this);
 }
 
-void FaceTracker::LoadVideoCapture()
+void EyeTracker::LoadVideoCapture()
 {
 	VideoCaptureMain.open(0, cv::VideoCaptureAPIs::CAP_MSMF);
 	if (!VideoCaptureMain.isOpened())
@@ -23,7 +23,7 @@ void FaceTracker::LoadVideoCapture()
 	VideoReady = true;
 }
 
-FaceTracker::~FaceTracker()
+EyeTracker::~EyeTracker()
 {
 	LoadingThread.join();
 	if (VideoReady)
@@ -32,7 +32,7 @@ FaceTracker::~FaceTracker()
 	}
 }
 
-void FaceTracker::Update(const float& deltaTime)
+void EyeTracker::Update(const float& deltaTime)
 {
 	if (VideoReady)
 	{
@@ -47,7 +47,7 @@ void FaceTracker::Update(const float& deltaTime)
 	}
 }
 
-int FaceTracker::GetCameraHeight() const
+int EyeTracker::GetCameraHeight() const
 {
 	if (!VideoReady)
 	{
@@ -56,7 +56,7 @@ int FaceTracker::GetCameraHeight() const
 	return (int)VideoCaptureMain.get(cv::CAP_PROP_FRAME_HEIGHT);;
 }
 
-int FaceTracker::GetCameraWidth() const
+int EyeTracker::GetCameraWidth() const
 {
 	if (!VideoReady)
 	{
@@ -66,7 +66,7 @@ int FaceTracker::GetCameraWidth() const
 	return (int)VideoCaptureMain.get(cv::CAP_PROP_FRAME_WIDTH);;
 }
 
-bool FaceTracker::TryGetFrame(cv::Mat& mat) const
+bool EyeTracker::TryGetFrame(cv::Mat& mat) const
 {
 	if (VideoReady)
 	{

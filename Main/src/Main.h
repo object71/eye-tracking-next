@@ -10,7 +10,7 @@
 #include <raylib.h>
 #include <future>
 #include <easy/profiler.h>
-#include "FaceTracker.h"
+#include "EyeTracker.h"
 
 
 #endif //EYETRACKINGNEXT_MAIN_H
