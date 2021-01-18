@@ -6,6 +6,7 @@ include(cmake/CompileDefinitions.cmake)
 find_package(OpenCV CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(raylib CONFIG REQUIRED)
 find_package(Python3 COMPONENTS Interpreter)
 add_subdirectory(Packages)
 

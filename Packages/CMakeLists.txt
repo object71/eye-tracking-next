@@ -15,13 +15,15 @@ target_link_libraries(Packages
                       opencv_flann
                       )
 
-target_link_libraries(Packages fmt::fmt)
+target_link_libraries(Packages fmt::fmt) # Should come along with spdlog
 target_link_libraries(Packages spdlog::spdlog)
+target_link_libraries(Packages ${raylib_LIBRARIES})
 
 target_include_directories(Packages
                            PUBLIC
                            $<INSTALL_INTERFACE:include>
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                           ${raylib_INCLUDE_DIRS}
                            PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}/src
                            )

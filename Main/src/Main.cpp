@@ -1,15 +1,15 @@
-#include <iostream>
 #include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
 #include <spdlog/spdlog.h>
-#include <chrono>
+#include <raylib.h>
 
 int main()
 {
 	spdlog::info("Application started");
 	spdlog::set_level(spdlog::level::debug);
+	
+	int screenWidth = 800;
+	int screenHeight = 600;
+	InitWindow(screenWidth, screenHeight, "Eye Tracking Next");
 	
 	//cv::CAP_DSHOW or cv::CAP_MSMF or cv::CAP_V4L
 	cv::VideoCapture capture;
@@ -23,45 +23,57 @@ int main()
 	
 	spdlog::info("Camera captured successfully");
 	
-	cv::Mat frame;
-	using namespace std::chrono;
 	
-	time_point<steady_clock> previousTime = steady_clock::now();
-	float lag = 0.0f;
-	const float desiredFrameRate = 0.016f;
 	
-	while (true)
+	cv::Mat frame
+			(
+					(int)capture.get(cv::CAP_PROP_FRAME_HEIGHT),
+					(int)capture.get(cv::CAP_PROP_FRAME_WIDTH),
+					(int)capture.get(cv::CAP_PROP_FORMAT)
+			);
+	
+	Image imageFrame;
+	imageFrame.format = UNCOMPRESSED_R8G8B8;
+	imageFrame.height = (int)capture.get(cv::CAP_PROP_FRAME_HEIGHT);
+	imageFrame.width = (int)capture.get(cv::CAP_PROP_FRAME_WIDTH);
+	imageFrame.mipmaps = 1;
+	imageFrame.data = frame.data;
+	
+	Texture2D mainTexture = LoadTextureFromImage(imageFrame);
+	
+	SetTargetFPS(60);
+	
+	while (!WindowShouldClose())
 	{
-		time_point<steady_clock> currentTime = steady_clock::now();
-		auto duration = currentTime - previousTime;
-		const float delta = duration_cast<nanoseconds>(duration).count() / 1000000000.f;
-		lag += delta;
 		
-		previousTime = currentTime;
+		// Update
+		capture >> frame;
 		
-		if (lag >= desiredFrameRate)
+		if (frame.empty())
 		{
-			if (cv::waitKey(25) == 27)
-			{
-				break;
-			}
-			
-			// Update
-			if (capture.read(frame))
-			{
-				if (frame.empty())
-				{
-					spdlog::critical("Frame is empty!");
-					break;
-				}
-				
-				cv::imshow("Camera", frame);
-				
-				lag = 0.0f;
-			}
+			spdlog::critical("Frame is empty!");
+			break;
 		}
+		
+		UpdateTexture(mainTexture, frame.data);
+		
+		// Draw
+		BeginDrawing();
+		
+		ClearBackground(RAYWHITE);
+		
+		DrawTexture(
+				mainTexture, screenWidth - mainTexture.width - 60, screenHeight / 2 - mainTexture.height / 2, WHITE
+		);
+		DrawRectangleLines(
+				screenWidth - mainTexture.width - 60, screenHeight / 2 - mainTexture.height / 2, mainTexture.width,
+				mainTexture.height, BLACK
+		);
+		
+		EndDrawing();
 	}
 	
 	capture.release();
+	
 	return 0;
 }
